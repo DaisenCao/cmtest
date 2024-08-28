@@ -1,0 +1,22 @@
+---
+variables:
+  AZURE_CLIENT_ID: "d5ee93eb-8e82-4763-896c-e21bbb6d8223"
+  AZURE_TENANT_ID: "b388b808-0ec9-4a09-a414-a7cbbd8b7e9b"
+  
+.id_tokens:
+  id_tokens:
+    GITLAB_01DC_TOKEN:
+      aud: api://AzureADTokenExchange
+
+aks-auth:
+  image: mcr.microsoft.com/azure-cli:latest
+  extends: .id_tokens
+  script:
+    - echo ${GITLAB_OIDC_TOKEN} > .ci_job_jwt_file
+    - az login --service-principal -u SAZURE_CLIENT_ID -t SAZURE_TENANT_ID --federated-token $GITLAB_OIDC_TOKEN
+    - az account show
+
+  artifacts:
+    paths:
+      - ".ci_job_jwt_file"
+    expire_in: 30 days
