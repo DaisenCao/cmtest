@@ -1,23 +1,24 @@
----
-variables:
-  AZURE_CLIENT_ID: "d5ee93eb-8e82-4763-896c-e21bbb6d8223"
-  AZURE_TENANT_ID: "b388b808-0ec9-4a09-a414-a7cbbd8b7e9b"
+name: Run Azure CLI Login with OpenID Connect
+on: [push]
 
-.id_tokens:
-  id_tokens:
-    GITLAB_OIDC_TOKEN:
-      aud: api://AzureADTokenExchangeChina
-
-aks-auth:
-  image: mcr.microsoft.com/azure-cli:latest
-  extends: .id_tokens  
-  script:
-    - echo ${GITLAB_OIDC_TOKEN} > .ci_job_jwt_file
-    - az cloud set --name AzureChinaCloud
-    - az login --service-principal -u $AZURE_CLIENT_ID -t $AZURE_TENANT_ID --federated-token $GITLAB_OIDC_TOKEN
-    - az account show
-
-  artifacts:
-    paths:
-      - ".ci_job_jwt_file"
-expire_in: 30 days
+permissions:
+  id-token: write # Require write permission to Fetch an OIDC token.
+      
+jobs: 
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Azure CLI Login
+      uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  
+    - name: Azure CLI script
+      uses: azure/cli@v2
+      with:
+        azcliversion: latest
+        inlineScript: |
+          az account show
+          # You can write your Azure CLI inline scripts here.
