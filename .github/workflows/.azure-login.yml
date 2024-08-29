@@ -1,7 +1,7 @@
 ---
 variables:
-  AZURE_CLIENT_ID: "5203e25f-7126-41fc-b227-e49891de151f"
-  AZURE_TENANT_ID: "be3c6fc0-df8a-405d-8dae-4530a1a87e82"
+  AZURE_CLIENT_ID: "d5ee93eb-8e82-4763-896c-e21bbb6d8223"
+  AZURE_TENANT_ID: "b388b808-0ec9-4a09-a414-a7cbbd8b7e9b"
 
 .id_tokens:
   id_tokens:
