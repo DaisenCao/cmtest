@@ -1,22 +1,23 @@
 ---
 variables:
-  AZURE_CLIENT_ID: "d5ee93eb-8e82-4763-896c-e21bbb6d8223"
-  AZURE_TENANT_ID: "b388b808-0ec9-4a09-a414-a7cbbd8b7e9b"
-  
+  AZURE_CLIENT_ID: "5203e25f-7126-41fc-b227-e49891de151f"
+  AZURE_TENANT_ID: "be3c6fc0-df8a-405d-8dae-4530a1a87e82"
+
 .id_tokens:
   id_tokens:
-    GITLAB_01DC_TOKEN:
-      aud: api://AzureADTokenExchange
+    GITLAB_OIDC_TOKEN:
+      aud: api://AzureADTokenExchangeChina
 
 aks-auth:
   image: mcr.microsoft.com/azure-cli:latest
-  extends: .id_tokens
+  extends: .id_tokens  
   script:
     - echo ${GITLAB_OIDC_TOKEN} > .ci_job_jwt_file
-    - az login --service-principal -u SAZURE_CLIENT_ID -t SAZURE_TENANT_ID --federated-token $GITLAB_OIDC_TOKEN
+    - az cloud set --name AzureChinaCloud
+    - az login --service-principal -u $AZURE_CLIENT_ID -t $AZURE_TENANT_ID --federated-token $GITLAB_OIDC_TOKEN
     - az account show
 
   artifacts:
     paths:
       - ".ci_job_jwt_file"
-    expire_in: 30 days
+expire_in: 30 days
