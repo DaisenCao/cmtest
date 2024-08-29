@@ -20,5 +20,7 @@ jobs:
       with:
         azcliversion: latest
         inlineScript: |
+          az cloud set -n AzureChinaCloud
+          az login 
           az account show
           # You can write your Azure CLI inline scripts here.
